@@ -100,6 +100,21 @@ app.post("/auth/login", async (req,res) => {
     if (!checkPassword) {
         return res.status(422).json({ message: "A senha está incorreta!" })       
     }
+
+    
+    try {
+
+        const secret = process.env.SECRET
+
+        const token = jwt.sign({
+            id: user._id
+        }, secret)
+
+        return res.status(200).json({message: "Autenticação realizada!", token})
+
+    } catch (err) {
+        return res.status(500).json({ message: "Houve um erro!" })       
+    }
 })
 
 // Server listen
