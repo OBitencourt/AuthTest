@@ -71,6 +71,36 @@ app.post('/auth/register', async (req, res) => {
   }
 })
 
+// Login
+
+app.post("/auth/login", async (req,res) => {
+
+    const {
+        email,
+        password
+    } = req.body
+
+    // validations
+
+    if (!email || !password) {
+        return res.status(422).json({ message: "Preencha os campos corretamente" })
+    }
+
+    // verify user existence
+
+    const user = await UserModel.findOne({ email: email })
+    if (!user) {
+        return res.status(404).json({ message: "Usuário não está cadastrado!" })
+    }
+
+    // check if password match
+
+    const checkPassword = await bcrypt.compare(password, user.password)
+
+    if (!checkPassword) {
+        return res.status(422).json({ message: "A senha está incorreta!" })       
+    }
+})
 
 // Server listen
 
